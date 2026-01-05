@@ -1,0 +1,168 @@
+# 新版OpenClash 通用链式代理配置模板（Smart 内核 优化版）
+# 作者：Hans（模板化版本）
+# 场景：Trojan 机场节点 + 住宅 SOCKS5 链式代理，防止 DNS/WebRTC 泄漏
+# 时间：2025-11-17 更新（Smart 内核最佳实践）
+
+# ──────────────── Clash-Fallback 链式代理────────────────
+
+
+
+# ──────────────── 基础设置 ────────────────
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: rule
+log-level: info
+external-controller: :9090
+
+dns:
+  enable: true                   # DNS服务开关 启用Clash内置DNS服务器
+  ipv6: false
+  listen: 0.0.0.0:53
+  respect-host-rules: true
+  use-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-filter:
+    - '*.lan'                     # 本地域名 不进行DNS解析，直接返回本地IP地址  
+    - localhost.ptlogin2.qq.com    # 本地域名 不进行DNS解析，直接返回本地IP地址  
+    - '*.msftconnecttest.com'      # 微软域名 不进行DNS解析，直接返回微软IP地址  
+    - '*.msftncsi.com'             # 微软域名 不进行DNS解析，直接返回微软IP地址  
+    - 'stun.*.*'                   # 微软域名 不进行DNS解析，直接返回微软IP地址  
+    - '*.stun.*'                   # 微软域名 不进行DNS解析，直接返回微软IP地址  
+
+  default-nameserver:               # 默认上游DNS服务器列表
+    - 119.29.29.29               # 腾讯DNS服务器
+    - 223.5.5.5                   # 阿里DNS服务器
+    - 114.114.114.114             # 百度DNS服务器
+  nameserver:
+    - https://dns.cloudflare.com/dns-query # Cloudflare DNS
+    - https://dns.google/dns-query         # Google DNS
+  nameserver-policy:                  # 域名策略
+    'geosite:cn':                  # 国内域名 不进行DNS解析，直接返回国内IP地址  
+      - 119.29.29.29               # 腾讯DNS服务器
+      - 223.5.5.5                   # 阿里DNS服务器
+      - 114.114.114.114             # 百度DNS服务器
+    'geosite:!cn':                  # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - https://dns.cloudflare.com/dns-query # Cloudflare DNS
+      - https://dns.google/dns-query         # Google DNS
+  fallback:                           # 备用上游DNS服务器列表
+    - https://doh.dns.sb/dns-query # DNS over HTTPS 代理
+    - https://dns.cloudflare.com/dns-query # Cloudflare DNS
+    - https://dns.google/dns-query         # Google DNS
+  fallback-filter:                       # 备用上游DNS服务器过滤
+    geoip: true                     # 启用GeoIP过滤
+    geoip-code: CN                  # 国内域名 不进行DNS解析，直接返回国内IP地址  
+    geosite:
+      - gfw                         # 国外域名 不进行DNS解析，直接返回国外IP地址  
+    ipcidr:
+      - 240.0.0.0/4
+    domain:                        # 域名 不进行DNS解析，直接返回域名IP地址  
+      - "+.google.com"
+      - "+.facebook.com"            # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.youtube.com"             # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.x.com"                   # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.openai.com"              # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.tiktok.com"              # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.icloud.com"              # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.apple.com"               # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.cloudflare.com"          # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.amazonaws.com"           # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.doubleclick.net"         # 国外域名 不进行DNS解析，直接返回国外IP地址  
+      - "+.ghproxy.com"             # 国外域名 不进行DNS解析，直接返回国外IP地址  
+  default-nameserver-policy: false      
+
+# ──────────────── 节点配置(必改) ────────────────
+proxies:
+  - {"name":"最新网址: fastlink.cc","type":"ss","server":"14c49bf5.flbgpi-hk.f2l5n1o1d2e4o.com","port":57601,"cipher":"chacha20-ietf-poly1305","password":"U8UUn1","udp":true}
+  - {"name":"剩余流量: 102.71GB","type":"ss","server":"14c49bf5.flbgpi-hk.f2l5n1o1d2e4o.com","port":57601,"cipher":"chacha20-ietf-poly1305","password":"U8UUn1","udp":true}
+  - {"name":"过期时间: 2026-01-06 17:06:43","type":"ss","server":"14c49bf5.flbgpi-hk.f2l5n1o1d2e4o.com","port":57601,"cipher":"chacha20-ietf-poly1305","password":"U8UUn1","udp":true}
+  - {"name":"动态BGP+IPLC|香港01","type":"ss","server":"14c49bf5.flbgpi-hk.f2l5n1o1d2e4o.com","port":57601,"cipher":"chacha20-ietf-poly1305","password":"U8UUn1","udp":true}
+  - {"name":"动态BGP+IPLC|香港02","type":"ss","server":"14c49bf5.flbgpi-hk.f2l5n1o1d2e4o.com","port":57602,"cipher":"chacha20-ietf-poly1305","password":"U8UUn1","udp":true}
+  - {"name":"动态BGP+IPLC|香港03","type":"ss","server":"14c49bf5.flbgpi-hk.f2l5n1o1d2e4o.com","port":57603,"cipher":"chacha20-ietf-poly1305","password":"U8UUn1","udp":true}
+  - {"name":"动态BGP+IPLC|香港04","type":"ss","server":"14c49bf5.flbgpi-hk.f2l5n1o1d2e4o.com","port":57604,"cipher":"chacha20-ietf-poly1305","password":"U8UUn1","udp":true}
+  
+
+# === 链式住宅 SOCKS5 出口（【必改】替换真实凭据）===
+  - name: 链式代理-住宅A
+    type: socks5
+    server: 5.6.7.8            # 【必改】住宅A 代理地址
+    port: 10000                # 【必改】端口号
+    username: user123          # 【必改】用户名
+    password: pass123          # 【必改】密码
+    udp: true
+    dialer-proxy: 住宅A-中继组   # 指定前置中继组
+
+# - name: 链式代理-住宅B   # 【默认禁用】启用请去掉#
+  # type: socks5
+  # server: 6.7.8.9          # 【必改】住宅B 地址
+  # port: 11000              # 【必改】端口号
+  # username: user456        # 【必改】用户名
+  # password: pass456        # 【必改】密码
+  # udp: true
+  # dialer-proxy: 住宅B-中继组
+
+# ──────────────── 策略组(必改) ────────────────
+#中继组(Trojan 机场节点一 住宅出口链式)
+proxy-groups:   
+- name: 自动选择                      # 自动选择节点
+  type: url-test                      # 类型 使用URL测试
+  url: https://cp.cloudflare.com/generate_204  # 测试URL
+  interval: 600                       # 间隔时间
+  tolerance: 2                        # 容差
+  proxies:
+  - A01                               # 节点A
+  - B01                               # 节点B
+  - C01                               # 节点C
+
+  # ======= 住宅IP-机场节点选择 =======
+- name: 住宅A-中继组
+  type: select                        # 类型 使用选择
+  proxies:                           # 节点列表
+  - 自动选择                          # 自动选择节点
+  - A01                               # 节点A
+  - B01                               # 节点B
+  - C01                               # 节点C
+
+# - name: 住宅B-中继组
+#   type: select
+#   proxies:
+#   - 自动选择
+#   - A01
+#   - B01
+#   - C01
+
+  # ======= 未设规则默认节点选择 =======
+- name: 节点选择
+  type: select
+  proxies:
+#   - 链式代理-住宅A
+#   - 链式代理-住宅B
+  - A01
+  - B01
+  - C01
+  - DIRECT
+# ──────────────── 分流规则(可选) ────────────────
+rules:
+- DOMAIN-SUFFIX,stun.l.google.com,REJECT
+- DOMAIN-KEYWORD,stun,REJECT
+- DOMAIN-KEYWORD,turn,REJECT
+- DOMAIN-KEYWORD,rtc,REJECT
+
+# =======  一机一住宅（配合 DHCP 静态分配固定IP 使用） =======
+# - SRC-IP-CIDR,192.168.20.12/32,链式代理-住宅A
+# - SRC-IP-CIDR,192.168.30.12/32,链式代理-住宅B
+
+# =======  一网段一住宅（配合多Wi-Fi不同网段 使用） =======
+# - SRC-IP-CIDR,192.168.110.0/24,链式代理-住宅A
+# - SRC-IP-CIDR,192.168.120.0/24,链式代理-住宅B
+
+- DOMAIN-SUFFIX,google.com,节点选择
+- DOMAIN-KEYWORD,facebook,节点选择
+- DOMAIN-SUFFIX,youtube.com,节点选择
+- DOMAIN-KEYWORD,tiktok,节点选择
+- DOMAIN-KEYWORD,openai,节点选择
+- DOMAIN-SUFFIX,icloud.com,节点选择
+- DOMAIN-SUFFIX,apple.com,节点选择
+- DOMAIN-KEYWORD,instagram,节点选择
+- GEOIP,CN,DIRECT
+- MATCH,节点选择
