@@ -81,7 +81,7 @@ profile:
 proxy-providers:
 
   Flsubcn:         
-    url: "https://10ncydlf.flsubcn.cc:2096/zvlqjih1t/2ge7owodzacnmwdm?clash=1&extend=1"           
+    url: "机场节点订阅链接"           
     type: http
     interval: 86400         
     health-check:       
@@ -98,10 +98,10 @@ proxies:
 # === 链式住宅 SOCKS5 出口（【必改】替换真实凭据）===
   - name: 链式代理-住宅A
     type: socks5
-    server: 222.167.45.202     # 【必改】住宅A 代理地址
-    port: 6051                 # 【必改】端口号
-    username: abc3623283_0wu5  # 【必改】用户名
-    password: 55498036         # 【必改】密码
+    server: 222.222.222.222     # 【必改】住宅A 代理地址
+    port: 11000                 # 【必改】端口号
+    username: user456  # 【必改】用户名
+    password: pass456         # 【必改】密码
     udp: true
     dialer-proxy: 香港-链式前置   # 指定前置中继组
 
